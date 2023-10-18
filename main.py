@@ -11,6 +11,7 @@ import configparser
 config = configparser.ConfigParser()  # создаём объекта парсера
 config.read("config.ini")  # читаем конфиг
 
+
 tg_user_id = config["tg_user"]["tg_user_id"]
 api_id = config["tg_user"]["api_id"]
 api_hash = config["tg_user"]["api_hash"]
