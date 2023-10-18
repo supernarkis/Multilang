@@ -6,16 +6,19 @@ import threading
 import telebot
 from telethon import TelegramClient
 import asyncio
+import configparser
 
+config = configparser.ConfigParser()  # создаём объекта парсера
+config.read("config.ini")  # читаем конфиг
 
-api_id = 26857008
-api_hash = 'ad41412989b57a0f91b97ae6195bc7b0'
-phone = '+77054399634'
-client = TelegramClient('anon', api_id, api_hash)
+tg_user_id = config["tg_user"]["tg_user_id"]
+api_id = config["tg_user"]["api_id"]
+api_hash = config["tg_user"]["api_hash"]
+phone = config["tg_user"]["phone"]
+token = config["Bot"]["token"]
 
-token = '6356979499:AAHIdNwHe9yANc0bRfrqIS_xAml1HqZVGAY'
 bot = telebot.TeleBot(token)
-
+client = TelegramClient('anon', api_id, api_hash)
 
 def process_video( message ):
     video_link = message.text
@@ -74,7 +77,7 @@ def video_translator( bot, message ):
 @bot.message_handler(content_types=['document', 'video'])
 def file_handler( message ):
     # Файлы от админа с caption
-    if message.from_user.id == 5904707497 and message.caption:
+    if message.from_user.id == tg_user_id and message.caption:
         # Создаем новый поток для пересылки
         threading.Thread(target=redirect_to_customer, args=(bot, message)).start()
 
