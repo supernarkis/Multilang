@@ -8,12 +8,12 @@ from telethon import TelegramClient
 import asyncio
 
 
-api_id = 26857008
-api_hash = 'ad41412989b57a0f91b97ae6195bc7b0'
-phone = '+77054399634'
+api_id = 0
+api_hash = ''
+phone = ''
 client = TelegramClient('anon', api_id, api_hash)
 
-token = '6356979499:AAHIdNwHe9yANc0bRfrqIS_xAml1HqZVGAY'
+token = ''
 bot = telebot.TeleBot(token)
 
 
@@ -74,7 +74,7 @@ def video_translator( bot, message ):
 @bot.message_handler(content_types=['document', 'video'])
 def file_handler( message ):
     # Файлы от админа с caption
-    if message.from_user.id == 5904707497 and message.caption:
+    if message.from_user.id == 0 and message.caption:
         # Создаем новый поток для пересылки
         threading.Thread(target=redirect_to_customer, args=(bot, message)).start()
 
