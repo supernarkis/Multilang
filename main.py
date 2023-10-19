@@ -34,23 +34,24 @@ def process_video( message ):
     yd = subprocess.Popen(["yt-dlp", "-o", temp_video, video_link,"--format", "22"], shell=True, stdout=sys.stdout)
     yd.communicate()
 
-    votcmd = ["powershell.exe", " vot-cli " + video_link + f" --output={temp_audio}"]
-    vot = subprocess.Popen(votcmd, shell=True, stdout=sys.stdout.reconfigure(encoding='utf-8'))
+    vot = subprocess.Popen(["vot-cli", video_link, "--output", temp_audio], shell=True, stdout=sys.stdout)
     vot.communicate()
 
     temp_video_file_name = os.listdir(temp_video_dir)[0]
     temp_video_file = temp_video_dir + "/" + temp_video_file_name
     temp_audio_file = temp_audio + "/" + os.listdir(temp_audio)[0]
 
-    cmd = 'ffmpeg -i \"' + temp_video_file + '\"' \
-                ' -i \"' + temp_audio_file + '\" ' \
-                '-c:v copy -b:a 128k ' \
-                '-filter_complex \"[0:a] volume=0.12 [original]; [original][1:a] amix=inputs=2:duration=longest [audio_out]\" ' \
-                '-map 0:v ' \
-                '-map \"[audio_out]\" ' \
-                '-y \"' + temp_video_file_name + '\"'
+    cmd = ['ffmpeg',
+            '-i', temp_video_file,
+            '-i',  temp_audio_file,
+            '-c:v', 'copy',
+            '-b:a', '128k',
+            '-filter_complex', '[0:a] volume=0.12 [original]; [original][1:a] amix=inputs=2:duration=longest [audio_out]',
+            '-map', '0:v',
+            '-map', '[audio_out]',
+            '-y', temp_video_file_name]
 
-    ff = subprocess.Popen(["powershell.exe", cmd], shell=True, stdout=sys.stdout.reconfigure(encoding='utf-8'))
+    ff = subprocess.Popen(cmd, shell=True, stdout=sys.stdout)
     ff.communicate()
 
     shutil.rmtree(temp_dir)
