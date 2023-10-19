@@ -22,7 +22,7 @@ sudo apt install ffmpeg
 ```
   4. Установите yt-dlp:
 ```
-sudi apt install yt-dlp
+sudo apt install yt-dlp
 ```
 5. Склонируйте репозиторий в выбранную папку перейдите в нее и настройте виртуальное окружение
    (предполагается что у вас установлен питон 3.6+ и venv):
@@ -30,13 +30,13 @@ sudi apt install yt-dlp
 git clone https://github.com/supernarkis/Multilang.git
 cd ./Multilang
 python -m venv myvenv
-source venv/bin/activate
-ip install -r requirements.txt
+source myvenv/bin/activate
+pip install -r requirements.txt
 ```
 7. В файле example-config.ini токен бота, id и хеш клиентского приложения и сохраните как config.ini 
 8. Запустите бота:
 ```
-python bot.py
+python main.py
 ```
 
 
