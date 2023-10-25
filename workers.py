@@ -36,15 +36,13 @@ async def download_video(event, video_url, video_file):
         await event.respond(f'Не удалось получить видео по ссылке')
         print(f'Ошибка в download_video: {str(e)}')
 
-
 async def download_audio(video_url, temp_audio_dir):
     try:
-        process = subprocess.Popen(['vot-cli', video_url, '--output', temp_audio_dir], shell=True, stdout=sys.stdout)
-        process.communicate()
+        process = subprocess.Popen(['vot-cli', f'--output={temp_audio_dir}', video_url])
+        process.wait()
         print('Переведенный аудио файл скачан')
     except Exception as e:
         print(f'Ошибка при скачивании переведенного аудио: {str(e)}')
-
 
 async def edit_video(video_file, audio_file, result_file):
     try:
