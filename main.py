@@ -9,9 +9,9 @@ tg_user_id = config["tg_user"]["tg_user_id"]
 api_id = config["tg_user"]["api_id"]
 api_hash = config["tg_user"]["api_hash"]
 phone = config["tg_user"]["phone"]
-
+session = config["tg_user"]["session"]
 # Создаем клиента Telegram
-client = TelegramClient('anon', api_id, api_hash)
+client = TelegramClient(session, api_id, api_hash)
 
 @client.on(events.NewMessage(pattern='^/start$'))
 async def start(event):
