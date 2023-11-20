@@ -15,19 +15,23 @@ async def process_video(client, event, video_url):
     os.makedirs(temp_dir, exist_ok=True)
     os.makedirs(temp_video_dir, exist_ok=True)
     os.makedirs(temp_audio_dir, exist_ok=True)
-
+    msg = await event.respond('Скачиваю видео')
     await download_video(event, video_url, video_file)
+    await client.edit_message(msg, 'Перевожу')
     await download_audio(event, video_url, temp_audio_dir)
     video_file = f'{temp_video_dir}/{os.listdir(temp_video_dir)[0]}'
     audio_file = f'{temp_audio_dir}/{os.listdir(temp_audio_dir)[0]}'
     result_file = f'{temp_dir}/{os.listdir(temp_video_dir)[0]}'
     try:
         if video_file and audio_file:
+            await client.edit_message(msg, 'Делаю дубляж')
             await edit_video(video_file, audio_file, result_file)
             if result_file:
-                await send_large_file(client, event, result_file)
+                await client.edit_message(msg, 'Загружаю')
+                await send_large_file(client, msg, result_file)
     finally:
         shutil.rmtree(temp_dir)
+        print("Done")
 
 async def download_video(event, video_url, video_file):
     try:
@@ -39,7 +43,7 @@ async def download_video(event, video_url, video_file):
 
 async def download_audio(event, video_url, temp_audio_dir):
     try:
-        process = subprocess.Popen(['vot-cli', f'--output={temp_audio_dir}', f'{video_url}'], shell=True, stdout=sys.stdout.reconfigure(encoding='utf-8'))
+        process = subprocess.Popen(['vot-cli', f'--output={temp_audio_dir}', f'{video_url}'])
         process.communicate()
         process.wait()
         print('Переведенный аудио файл скачан')
@@ -68,6 +72,7 @@ async def edit_video(video_file, audio_file, result_file):
 async def send_large_file(client, event, file_path):
     try:
         await client.send_file(event.chat_id, os.path.abspath(file_path), mime_type='video/mp4')
+        await client.edit_message(event, 'Готово')
     except Exception as e:
         await event.respond(f'Не узалось загрузить переведенное видео в телеграм: {str(e)}')
         print(f'Произошла ошибка в send_large_file: {str(e)}')
