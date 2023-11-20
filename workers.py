@@ -7,6 +7,7 @@ import sys
 
 async def process_video(client, event, video_url):
     temp_dir = f'temp/{event.id}'
+    print(event.id)
     temp_video_dir = f'{temp_dir}/video'
     temp_audio_dir = f'{temp_dir}/audio'
     video_file = f"{temp_video_dir}/%(title)s.%(ext)s"
@@ -16,7 +17,7 @@ async def process_video(client, event, video_url):
     os.makedirs(temp_audio_dir, exist_ok=True)
 
     await download_video(event, video_url, video_file)
-    await download_audio(video_url, temp_audio_dir)
+    await download_audio(event, video_url, temp_audio_dir)
     video_file = f'{temp_video_dir}/{os.listdir(temp_video_dir)[0]}'
     audio_file = f'{temp_audio_dir}/{os.listdir(temp_audio_dir)[0]}'
     result_file = f'{temp_dir}/{os.listdir(temp_video_dir)[0]}'
@@ -33,15 +34,17 @@ async def download_video(event, video_url, video_file):
         process = await asyncio.create_subprocess_exec('yt-dlp', video_url, '-o', video_file, "-f", "22")
         await process.wait()
     except Exception as e:
-        await event.respond(f'Не удалось получить видео по ссылке')
+        await event.respond(f'Не удалось получить видео по ссылке: {str(e)}')
         print(f'Ошибка в download_video: {str(e)}')
 
-async def download_audio(video_url, temp_audio_dir):
+async def download_audio(event, video_url, temp_audio_dir):
     try:
-        process = subprocess.Popen(['vot-cli', f'--output={temp_audio_dir}', video_url])
+        process = subprocess.Popen(['vot-cli', f'--output={temp_audio_dir}', video_url], shell=True, stdout=sys.stdout.reconfigure(encoding='utf-8'))
+        process.communicate()
         process.wait()
         print('Переведенный аудио файл скачан')
     except Exception as e:
+        await event.respond(f'Не удалось получить перевод: {str(e)}')
         print(f'Ошибка при скачивании переведенного аудио: {str(e)}')
 
 async def edit_video(video_file, audio_file, result_file):
