@@ -39,7 +39,7 @@ async def download_video(event, video_url, video_file):
 
 async def download_audio(event, video_url, temp_audio_dir):
     try:
-        process = subprocess.Popen(['vot-cli', f'--output={temp_audio_dir}', video_url], shell=True, stdout=sys.stdout.reconfigure(encoding='utf-8'))
+        process = subprocess.Popen(['vot-cli', f'--output={temp_audio_dir}', f'{video_url}'], shell=True, stdout=sys.stdout.reconfigure(encoding='utf-8'))
         process.communicate()
         process.wait()
         print('Переведенный аудио файл скачан')
