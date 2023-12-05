@@ -31,7 +31,7 @@ git clone https://github.com/supernarkis/Multilang.git
 cd ./Multilang
 python -m venv myvenv
 source myvenv/bin/activate
-pip install -r requirements.txt
+pip install -r require.txt
 ```
 7. В файле example-config.ini токен бота, id и хеш клиентского приложения и сохраните как config.ini 
 8. Запустите бота:
